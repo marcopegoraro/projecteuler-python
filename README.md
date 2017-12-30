@@ -1,2 +1,3 @@
 # projecteuler-python
-Collection of solutions of some Project Euler programming problems.
+Solutions of some Project Euler programming problems.
+https://projecteuler.net/
