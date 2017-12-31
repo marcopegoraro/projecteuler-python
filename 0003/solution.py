@@ -20,7 +20,7 @@ while not found:
     if n % k == 0:
         if n % (n // k) == 0 and is_prime(n // k):
             found = True
-            print(n // k)
+            print('\n' + str(n // k))
     k += 2
 
-print("\nSolution found in %s seconds." % (time.time() - start))
+print('\nSolution found in %s seconds.' % (time.time() - start))
