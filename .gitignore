@@ -1,2 +1,5 @@
 # IDEa files
 *.idea*
+
+# Pycache
+__pycache__/*
