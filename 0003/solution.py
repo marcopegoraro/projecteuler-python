@@ -1,26 +1,26 @@
-# The number (let's call it n) is not even; the largest possible divisor is thus n/3
-# I'll just iterate checking the divisibility for n/k, where k is 3, 5, 7, ... and then check for primality
+# If k divides n, then n/k also divides n
+# Strategy: iterate over incresing k and search for the first prime n/k
 
 import time
-import math
 
-def is_prime(n):
-    for i in range(2, math.ceil(math.sqrt(n))):
-        if n % i == 0:
-            return False
-    return True
+from utils_prime import is_prime
 
-start = time.time()
+
+start = time.process_time()
 
 n = 600851475143
 k = 3
+largest_factor = 1
 found = False
 
 while not found:
     if n % k == 0:
-        if n % (n // k) == 0 and is_prime(n // k):
+        if is_prime(n // k):
             found = True
-            print('\n' + str(n // k))
+            largest_factor = n // k
+        else:
+            n = n // k
     k += 2
 
-print('\nSolution found in %s seconds.' % (time.time() - start))
+print('Solution: ' + str(largest_factor))
+print('\nSolution found in %s seconds.' % (time.process_time() - start))
