@@ -7,5 +7,5 @@ from utils_prime import lcm_list
 start = time.process_time()
 
 # print('Solution: ' + str(lcm_list(range(2, 21))))
-print('Solution: ' + str(2**4*3**2*5*7*11*13*17*19))
+print('Solution: ' + str(2**4 * 3**2 * 5 * 7 * 11 * 13 * 17 * 19))
 print('\nSolution found in %s seconds.' % (time.process_time() - start))

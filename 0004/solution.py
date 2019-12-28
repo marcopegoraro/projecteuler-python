@@ -9,7 +9,7 @@ start = time.process_time()
 
 maxfound = 0
 for i in range(999, 99, -1):
-    for j in range(i-1, 99, -1):
+    for j in range(i - 1, 99, -1):
         if is_palindrome(str(i*j)):
             if i*j > maxfound:
                 maxfound = i*j
