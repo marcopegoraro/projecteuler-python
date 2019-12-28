@@ -2,26 +2,30 @@
  Based on primes.py by Oregon Curriculum Network (OCN)
  Original file history on the bottom
 """
+
 import random, operator
+from functools import reduce
 
-PRIMES = [2]    # global list of primes
 
+PRIMES = [2]  # global list of primes
 
-def iseven(n):
+def is_even(n):
     """
     Return true if n is even.
     """
-    return n% 2 == 0
+
+    return n % 2 == 0
 
 
-def isodd(n):
+def is_odd(n):
     """
     Return true if n is odd.
     """
-    return not iseven(n)
+
+    return not is_even(n)
 
 
-def get2max(maxnb):
+def get_primes2max(maxnb):
     """
     Return list of primes up to maxnb.
     """
@@ -34,7 +38,7 @@ def get2max(maxnb):
     i = PRIMES[-1]
     # and add...
 
-    i = i + 1 + isodd(i) * 1  # next odd number
+    i = i + 1 + is_odd(i) * 1  # next odd number
 
     if i <= maxnb:  # if more prime checking needed...
 
@@ -55,7 +59,7 @@ def get2max(maxnb):
     return PRIMES[:nbprimes]
 
 
-def get2nb(nbprimes):
+def get_primes(nbprimes):
     """
     Return list of primes with nbprimes members.
     """
@@ -66,7 +70,7 @@ def get2nb(nbprimes):
         i = PRIMES[-1]
         # and add...
 
-        i = i + 1 + isodd(i) * 1
+        i = i + 1 + is_odd(i) * 1
 
         while len(PRIMES) < nbprimes:
             if divtrial(i): PRIMES.append(i)
@@ -75,16 +79,17 @@ def get2nb(nbprimes):
     return PRIMES[:nbprimes]
 
 
-def isprime(n):
+def is_prime(n):
     """
     Divide by primes until n proves composite or prime.
 
     Brute force algorithm, will wimp out for humongous n
     return 0 if n is divisible
-    return 1 if n is prime"""
+    return 1 if n is prime
+    """
 
     if n == 2: return 1
-    if n < 2 or iseven(n): return 0
+    if n < 2 or is_even(n): return 0
 
     maxnb = n ** 0.5  # 2nd root of n
 
@@ -108,7 +113,7 @@ def isprime(n):
             i = PRIMES[-1]
             # and add...
 
-            i = i + 1 + isodd(i) * 1  # next odd number
+            i = i + 1 + is_odd(i) * 1  # next odd number
 
             while i <= maxnb:
                 if divtrial(i):  # test of primehood
@@ -125,17 +130,20 @@ def isprime(n):
     return rtnval
 
 
-def iscomposite(n):
+def is_composite(n):
     """
     Return true if n is composite.
-    Uses isprime"""
-    return not isprime(n)
+    Uses isprime
+    """
+
+    return not is_prime(n)
 
 
 def divtrial(n):
     """
     Trial by division check whether a number is prime.
     """
+
     verdict = 1  # default is "yes, add to list"
 
     cutoff = n ** 0.5  # 2nd root of n
@@ -155,7 +163,9 @@ def divtrial(n):
 
 def eratosthenes(n):
     """
-    Suggestions from Ka-Ping Yee, John Posner and Tim Peters"""
+    Suggestions from Ka-Ping Yee, John Posner and Tim Peters
+    """
+
     sieve = [0, 0, 1] + [1, 0] * (n / 2)  # [0 0 1 1 0 1 0...]
 
     prime = 3  # initial odd prime
@@ -168,7 +178,7 @@ def eratosthenes(n):
 
     # filter includes corresponding integers where sieve = 1
 
-    return filter(lambda i, sieve=sieve: sieve[i], range(n + 1))
+    return list(filter(lambda i, sieve=sieve: sieve[i], list(range(n + 1))))
 
 
 def sieve(n):
@@ -176,6 +186,7 @@ def sieve(n):
     In-place sieving of odd numbers, adapted from code
     by Mike Fletcher
     """
+
     candidates = list(range(3, n + 1, 2))  # start with odds
 
     for p in candidates:
@@ -183,22 +194,25 @@ def sieve(n):
 
             if p * p > n: break  # done
 
-            for q in xrange(p * p, n + 1, 2 * p):  # sieving
+            for q in range(p * p, n + 1, 2 * p):  # sieving
 
                 candidates[(q - 3) / 2] = 0
-    return [2] + filter(None, candidates)  # [2] + remaining nonzeros
+
+    return [2] + [_f for _f in candidates if _f]  # [2] + remaining nonzeros
 
 
 def base(n, b):
     """
     Accepts n in base 10, returns list corresponding to n base b.
     """
+
     output = []
     while n >= 1:
         n, r = divmod(n, b)  # returns quotient, remainder
 
         output.append(r)
     output.reverse()
+
     return output
 
 
@@ -209,6 +223,7 @@ def fermat(n, b=2):
     returns 0 (condition false) if n is composite, -1 if
     base is not relatively prime
     """
+
     if gcd(n, b) > 1:
         return -1
     else:
@@ -220,9 +235,10 @@ def jacobi(a, n):
 
     source: http://www.utm.edu/research/primes/glossary/JacobiSymbol.html
     """
+
     j = 1
     while not a == 0:
-        while iseven(a):
+        while is_even(a):
             a = a / 2
             if (n % 8 == 3 or n % 8 == 5): j = -j
 
@@ -245,6 +261,7 @@ def euler(n, b=2):
 
     (stronger than simple fermat test)
     """
+
     term = pow(b, (n - 1) / 2.0, n)
     jac = jacobi(b, n)
     if jac == -1:
@@ -253,26 +270,28 @@ def euler(n, b=2):
         return term == jac
 
 
-def getfactors(n):
+def get_factors(n):
     """
     Return list containing prime factors of a number.
     """
-    if isprime(n) or n == 1:
+
+    if is_prime(n) or n == 1:
         return [n]
     else:
         for i in PRIMES:
             if not n % i:  # if goes evenly
-
                 n = n / i
-                return [i] + getfactors(n)
+                return [i] + get_factors(n)
 
 
 def gcd(a, b):
     """
     Return greatest common divisor using Euclid's Algorithm.
     """
+
     while b:
         a, b = b, a % b
+
     return a
 
 
@@ -280,23 +299,27 @@ def lcm(a, b):
     """
     Return lowest common multiple.
     """
-    return (a * b) / gcd(a, b)
+
+    return (a * b) // gcd(a, b)
 
 
-def GCD(terms):
+def gcd_list(terms):
     """
     Return gcd of a list of numbers.
     """
+
     return reduce(lambda a, b: gcd(a, b), terms)
 
 
-def LCM(terms):
+def lcm_list(terms):
     """
     Return lcm of a list of numbers.
     """
+
     result = 1
     for t in terms:
         result = lcm(result, t)
+
     return result
 
 
@@ -304,13 +327,14 @@ def phi(n):
     """
     Return number of integers < n relatively prime to n.
     """
+
     product = n
     used = []
-    for i in getfactors(n):
+    for i in get_factors(n):
         if i not in used:  # use only unique prime factors
-
             used.append(i)
             product = product * (1 - 1.0 / i)
+
     return int(product)
 
 
@@ -319,20 +343,23 @@ def relprimes(n, b=1):
     List the remainders after dividing n by each
     n-relative prime * some relative prime b
     """
+
     relprimes = []
     for i in range(1, n):
-        if gcd(i, n) == 1:  relprimes.append(i)
+        if gcd(i, n) == 1:
+            relprimes.append(i)
     print("n-rp's: %s" % relprimes)
-    relprimes = map(operator.mul, [b] * len(relprimes), relprimes)
-    newremainders = map(operator.mod, relprimes, [n] * len(relprimes))
+    relprimes = list(map(operator.mul, [b] * len(relprimes), relprimes))
+    newremainders = list(map(operator.mod, relprimes, [n] * len(relprimes)))
     print("b * n-rp's mod n: %s" % newremainders)
 
 
-def testeuler(a, n):
+def test_euler(a, n):
     """
     Test Euler's Theorem
     """
-    a = long(a)
+
+    a = int(a)
     if gcd(a, n) > 1:
         print("(a,n) not relative primes")
     else:
@@ -343,11 +370,12 @@ def goldbach(n):
     """
     Return pair of primes such that p1 + p2 = n.
     """
+
     rtnval = []
 
-    primes = get2max(n)
+    primes = get_primes2max(n)
 
-    if isodd(n) and n >= 5:
+    if is_odd(n) and n >= 5:
         rtnval = [3]  # 3 is a term
 
         n = n - 3  # 3 + goldbach(lower even)
@@ -399,7 +427,7 @@ def bigdec(n):
     decstring = random.choice(decdigits[1:])
     for i in range(n):
         decstring += random.choice(decdigits)
-    return long(decstring)
+    return int(decstring)
 
 
 def bigppr(digits=100):
@@ -407,6 +435,7 @@ def bigppr(digits=100):
     Randomly generate a probable prime with a given
     number of decimal digits
     """
+
     print("Working...")
     candidate = bigdec(digits)  # or use bighex
 
@@ -428,32 +457,37 @@ def pptest(n):
     Simple implementation of Miller-Rabin test for
     determining probable primehood.
     """
+
     bases = [random.randrange(2, 50000) for x in range(90)]
 
     # if any of the primes is a factor, we're done
 
-    if n <= 1: return 0
+    if n <= 1:
+        return 0
 
     for b in bases:
-        if n % b == 0: return 0
+        if n % b == 0:
+            return 0
 
-    tests, s = 0L, 0
+    tests, s = 0, 0
     m = n - 1
 
     # turning (n-1) into (2**s) * m
 
     while not m & 1:  # while m is even
-
         m >>= 1
         s += 1
+
+    isprob = 0
 
     for b in bases:
         tests += 1
         isprob = algP(m, s, b, n)
-        if not isprob: break
+        if not isprob:
+            break
 
     if isprob:
-        return (1 - (1. / (4 ** tests)))
+        return 1 - (1. / (4 ** tests))
     else:
         return 0
 
@@ -463,6 +497,7 @@ def algP(m, s, b, n):
     based on Algorithm P in Donald Knuth's 'Art of
     Computer Programming' v.2 pg. 395
     """
+
     result = 0
     y = pow(b, m, n)
     for j in range(s):
@@ -480,8 +515,9 @@ def invmod(a, b):
     http://www.pythonjournal.com/volume1/issue1/art-algorithms/
     -- in turn also based on Knuth, vol 2.
     """
-    a1, a2, a3 = 1L, 0L, a
-    b1, b2, b3 = 0L, 1L, b
+
+    a1, a2, a3 = 1, 0, a
+    b1, b2, b3 = 0, 1, b
     while b3 != 0:
         # The following division will drop decimals.
 
@@ -489,8 +525,10 @@ def invmod(a, b):
         t = a1 - b1 * q, a2 - b2 * q, a3 - b3 * q
         a1, a2, a3 = b1, b2, b3
         b1, b2, b3 = t
-    while a2 < 0: a2 = a2 + a
+    while a2 < 0:
+        a2 = a2 + a
     return a2
+
 
 """
  primes.py  -- Oregon Curriculum Network (OCN)
