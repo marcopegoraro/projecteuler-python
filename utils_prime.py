@@ -25,13 +25,13 @@ def is_odd(n):
     return not is_even(n)
 
 
-def get_primes2max(maxnb):
+def get_primes2max(max_n):
     """
     Return list of primes up to maxnb.
     """
 
     nbprimes = 0
-    if maxnb < 2: return []
+    if max_n < 2: return []
 
     # start with highest prime so far
 
@@ -40,9 +40,9 @@ def get_primes2max(maxnb):
 
     i = i + 1 + is_odd(i) * 1  # next odd number
 
-    if i <= maxnb:  # if more prime checking needed...
+    if i <= max_n:  # if more prime checking needed...
 
-        while i <= maxnb:
+        while i <= max_n:
             if divtrial(i): PRIMES.append(i)  # append to list if verdict true
 
             i = i + 2  # next odd number
@@ -51,7 +51,7 @@ def get_primes2max(maxnb):
     else:
         for i in PRIMES:  # return primes =< maxnb, even if more on file
 
-            if i <= maxnb:
+            if i <= max_n:
                 nbprimes = nbprimes + 1
             else:
                 break  # quit testing once maxnb exceeded
