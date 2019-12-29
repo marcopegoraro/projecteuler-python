@@ -59,12 +59,12 @@ def get_primes2max(maxnb):
     return PRIMES[:nbprimes]
 
 
-def get_primes(nbprimes):
+def get_primes(n_primes):
     """
     Return list of primes with nbprimes members.
     """
 
-    if nbprimes > len(PRIMES):
+    if n_primes > len(PRIMES):
         # start with highest prime so far
 
         i = PRIMES[-1]
@@ -72,11 +72,11 @@ def get_primes(nbprimes):
 
         i = i + 1 + is_odd(i) * 1
 
-        while len(PRIMES) < nbprimes:
+        while len(PRIMES) < n_primes:
             if divtrial(i): PRIMES.append(i)
             i = i + 2
 
-    return PRIMES[:nbprimes]
+    return PRIMES[:n_primes]
 
 
 def is_prime(n):
