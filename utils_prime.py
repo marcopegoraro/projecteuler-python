@@ -270,18 +270,43 @@ def euler(n, b=2):
         return term == jac
 
 
-def get_factors(n):
+# TODO: get_prime_factors is inefficient. At each recursive call they re-check factors that have been
+# already used. if I am checking the factor f, the number n is not divisible by any factor f'<f. Remove recursion.
+
+def get_prime_factors(n):
     """
-    Return list containing prime factors of a number.
+    Return list containing the prime factors of a number.
     """
 
     if is_prime(n) or n == 1:
         return [n]
-    else:
-        for i in PRIMES:
-            if not n % i:  # if goes evenly
-                n = n / i
-                return [i] + get_factors(n)
+
+    for i in PRIMES:
+        if not n % i:  # i is a factor
+            n = n // i
+            return [i] + get_prime_factors(n)
+
+
+def get_factors(n):
+    """
+    Return set containing the factors of a number.
+    """
+
+    factors = {1}
+
+    if is_prime(n) or n == 1:
+        return factors
+
+    max_div = n // 2
+    i = 2
+    while i < max_div:
+        if not n % i:  # i is a factor
+            factors.add(i)
+            factors.add(n // i)
+            max_div = n // i
+        i += 1
+
+    return factors
 
 
 def gcd(a, b):
