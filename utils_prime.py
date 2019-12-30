@@ -276,6 +276,8 @@ def euler(n, b=2):
 def get_prime_factors(n):
     """
     Return list containing the prime factors of a number.
+    WARNING: this works because of continuous updating of the PRIMES list inbetween recursive calls.
+    Every recursive call is called on smaller values of n, which will populate the PRIMES list before callbacks.
     """
 
     if is_prime(n) or n == 1:
@@ -285,6 +287,46 @@ def get_prime_factors(n):
         if not n % i:  # i is a factor
             n = n // i
             return [i] + get_prime_factors(n)
+
+
+def get_map_prime_factors(n):
+    """
+    Returns a dictionary prime factors-exponent of a number.
+    """
+
+    factors_list = get_prime_factors(n)
+    factors_map = {}
+    for factor in factors_list:
+        if factor not in factors_map:
+            factors_map[factor] = 1
+        else:
+            factors_map[factor] += 1
+
+    return factors_map
+
+
+def get_factors_experimental(n):
+    """
+    Return an unsorted set containing the factors of a number.
+    TODO: this needs fixing, it does not populate the PRIMES list
+    """
+
+    factors = {1}
+
+    if is_prime(n) or n == 1:
+        return factors
+
+    for i in PRIMES:
+        if not n % i:
+            factors.add(i)
+            factors.add(n // i)
+            if is_prime(n // i):
+                print('Test')
+                break
+            else:
+                n = n // i
+
+    return factors
 
 
 def get_factors(n):
@@ -307,6 +349,41 @@ def get_factors(n):
         i += 1
 
     return factors
+
+
+def get_n_factors(n):
+    """
+    Returns the number of factors of the input.
+    """
+
+    n_factors = 1
+    for e in get_map_prime_factors(n).values():
+        n_factors *= (e + 1)
+
+    return n_factors
+
+
+def get_sum_factors(n):
+    """
+    Returns the sum of factors of the input.
+    TODO: test
+    """
+
+    sum_factors = 1
+    f_map = get_map_prime_factors(n)
+    for f in f_map:
+        sum_factors *= (f ** (f_map[f] + 1) - 1) // (f - 1)
+
+    return sum_factors
+
+
+def get_prod_factors(n):
+    """
+    Returns the product of factors of the input.
+    TODO: test
+    """
+
+    return n ** (get_n_factors(n) // 2)
 
 
 def gcd(a, b):
