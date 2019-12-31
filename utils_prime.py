@@ -3,11 +3,13 @@
  Original file history on the bottom
 """
 
-import random, operator
+from random import choice, randrange
+from operator import mul, mod
 from functools import reduce
 
 
 PRIMES = [2]  # global list of primes
+
 
 def is_even(n):
     """
@@ -31,7 +33,8 @@ def get_primes2max(max_n):
     """
 
     nbprimes = 0
-    if max_n < 2: return []
+    if max_n < 2:
+        return []
 
     # start with highest prime so far
 
@@ -43,7 +46,8 @@ def get_primes2max(max_n):
     if i <= max_n:  # if more prime checking needed...
 
         while i <= max_n:
-            if divtrial(i): PRIMES.append(i)  # append to list if verdict true
+            if divtrial(i):
+                PRIMES.append(i)  # append to list if verdict true
 
             i = i + 2  # next odd number
 
@@ -73,7 +77,8 @@ def get_primes(n_primes):
         i = i + 1 + is_odd(i) * 1
 
         while len(PRIMES) < n_primes:
-            if divtrial(i): PRIMES.append(i)
+            if divtrial(i):
+                PRIMES.append(i)
             i = i + 2
 
     return PRIMES[:n_primes]
@@ -88,8 +93,14 @@ def is_prime(n):
     return 1 if n is prime
     """
 
-    if n == 2: return 1
-    if n < 2 or is_even(n): return 0
+    if not isinstance(n, int):
+        raise TypeError('Input must be an integer.')
+    if n == 2:
+        return 1
+    if n == 0 or n == 1 or is_even(n):
+        return 0
+    if n < 0:
+        n = -n
 
     maxnb = n ** 0.5  # 2nd root of n
 
@@ -198,7 +209,7 @@ def sieve(n):
 
                 candidates[(q - 3) / 2] = 0
 
-    return [2] + [_f for _f in candidates if _f]  # [2] + remaining nonzeros
+    return [2] + [candidate for candidate in candidates if candidate]  # [2] + remaining nonzeros
 
 
 def base(n, b):
@@ -240,13 +251,15 @@ def jacobi(a, n):
     while not a == 0:
         while is_even(a):
             a = a / 2
-            if (n % 8 == 3 or n % 8 == 5): j = -j
+            if n % 8 == 3 or n % 8 == 5:
+                j = -j
 
         x = a
         a = n
         n = x  # exchange places
 
-        if (a % 4 == 3 and n % 4 == 3): j = -j
+        if a % 4 == 3 and n % 4 == 3:
+            j = -j
         a = a % n
 
     if n == 1:
@@ -270,23 +283,38 @@ def euler(n, b=2):
         return term == jac
 
 
+def factorization_check(n):
+    if not isinstance(n, int):
+        raise TypeError('Input must be an integer.')
+    if n == 0:
+        raise ArithmeticError('Input must be non-zero.')
+    if n < 0:
+        return -n
+    return n
+
+
 # TODO: get_prime_factors is inefficient. At each recursive call they re-check factors that have been
 # already used. if I am checking the factor f, the number n is not divisible by any factor f'<f. Remove recursion.
 
 def get_prime_factors(n):
     """
-    Return list containing the prime factors of a number.
+    Return list containing the absolute value of the prime factors of a number.
     WARNING: this works because of continuous updating of the PRIMES list inbetween recursive calls.
     Every recursive call is called on smaller values of n, which will populate the PRIMES list before callbacks.
     """
 
-    if is_prime(n) or n == 1:
+    n = factorization_check(n)
+
+    if n == 1:
+        return []
+
+    if is_prime(n):
         return [n]
 
     for i in PRIMES:
         if not n % i:  # i is a factor
             n = n // i
-            return [i] + get_prime_factors(n)
+            return [i] + get_prime_factors(n) # TODO: test return [i] + get_prime_factors(n // i)
 
 
 def get_map_prime_factors(n):
@@ -305,49 +333,25 @@ def get_map_prime_factors(n):
     return factors_map
 
 
-def get_factors_experimental(n):
-    """
-    Return an unsorted set containing the factors of a number.
-    TODO: this needs fixing, it does not populate the PRIMES list
-    """
-
-    factors = {1}
-
-    if is_prime(n) or n == 1:
-        return factors
-
-    for i in PRIMES:
-        if not n % i:
-            factors.add(i)
-            factors.add(n // i)
-            if is_prime(n // i):
-                print('Test')
-                break
-            else:
-                n = n // i
-
-    return factors
-
-
 def get_factors(n):
     """
-    Return set containing the factors of a number.
+    Return an unsorted set containing the absolute values of the factors of a number.
     """
 
+    n = factorization_check(n)
+
+    if is_prime(n):
+        return {1, n}
+
     factors = {1}
-
-    if is_prime(n) or n == 1:
-        return factors
-
-    max_div = n // 2
     i = 2
-    while i < max_div:
+    while i <= n ** .5:
         if not n % i:  # i is a factor
             factors.add(i)
             factors.add(n // i)
-            max_div = n // i
         i += 1
 
+    factors.add(n)
     return factors
 
 
@@ -355,6 +359,8 @@ def get_n_factors(n):
     """
     Returns the number of factors of the input.
     """
+
+    n = factorization_check(n)
 
     n_factors = 1
     for e in get_map_prime_factors(n).values():
@@ -365,9 +371,10 @@ def get_n_factors(n):
 
 def get_sum_factors(n):
     """
-    Returns the sum of factors of the input.
-    TODO: test
+    Returns the sum of the absolute values of the factors of the input.
     """
+
+    n = factorization_check(n)
 
     sum_factors = 1
     f_map = get_map_prime_factors(n)
@@ -379,11 +386,16 @@ def get_sum_factors(n):
 
 def get_prod_factors(n):
     """
-    Returns the product of factors of the input.
-    TODO: test
+    Returns the product of the absolute values of the factors of the input.
     """
 
-    return n ** (get_n_factors(n) // 2)
+    n = factorization_check(n)
+
+    n_factors = get_n_factors(n)
+    if is_even(n_factors):
+        return n ** (n_factors // 2)
+    else:  # n is a square number
+        return n ** (n_factors // 2) * int(n ** .5)
 
 
 def gcd(a, b):
@@ -451,8 +463,8 @@ def relprimes(n, b=1):
         if gcd(i, n) == 1:
             relprimes.append(i)
     print("n-rp's: %s" % relprimes)
-    relprimes = list(map(operator.mul, [b] * len(relprimes), relprimes))
-    newremainders = list(map(operator.mod, relprimes, [n] * len(relprimes)))
+    relprimes = list(map(mul, [b] * len(relprimes), relprimes))
+    newremainders = list(map(mod, relprimes, [n] * len(relprimes)))
     print("b * n-rp's mod n: %s" % newremainders)
 
 
@@ -518,17 +530,17 @@ http://www.inetarena.com/~pdx4d/ocn/clubhouse.html
 
 def bighex(n):
     hexdigits = list('0123456789ABCDEF')
-    hexstring = random.choice(hexdigits[1:])
+    hexstring = choice(hexdigits[1:])
     for i in range(n):
-        hexstring += random.choice(hexdigits)
+        hexstring += choice(hexdigits)
     return eval('0x' + hexstring + 'L')
 
 
 def bigdec(n):
     decdigits = list('0123456789')
-    decstring = random.choice(decdigits[1:])
+    decstring = choice(decdigits[1:])
     for i in range(n):
-        decstring += random.choice(decdigits)
+        decstring += choice(decdigits)
     return int(decstring)
 
 
@@ -560,7 +572,7 @@ def pptest(n):
     determining probable primehood.
     """
 
-    bases = [random.randrange(2, 50000) for x in range(90)]
+    bases = [randrange(2, 50000) for x in range(90)]
 
     # if any of the primes is a factor, we're done
 
