@@ -1,3 +1,6 @@
+# Intuition: in the triple a, b and c, we always have that a < b, b < 500 - a, and c = 500 - a - b. This cuts down the
+# search space.
+
 import time
 
 

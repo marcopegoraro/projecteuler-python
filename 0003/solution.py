@@ -1,4 +1,4 @@
-# If k divides n, then n/k also divides n
+# Intuition: if k divides n, then n/k also divides n
 # Strategy: iterate over incresing k and search for the first prime n/k
 
 import time
