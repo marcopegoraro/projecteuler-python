@@ -13,8 +13,10 @@ import time
 
 from utils_number_theory import pascals_triangle
 
+grid_x = 20
+grid_y = 20
 
 start = time.process_time()
 
-print('Solution: ' + str(pascals_triangle(21, 21)[20][20]))
+print('Solution: ' + str(pascals_triangle(grid_x + 1, grid_y + 1)[grid_x][grid_y]))
 print('\nSolution found in %s seconds.' % (time.process_time() - start))
