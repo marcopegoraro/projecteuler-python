@@ -45,6 +45,10 @@ def gen_triangs(n_triangs):
 
 
 def collatz_steps(n):
+    """
+    Returns the elements of the Collatz sequence for the integer in input.
+    """
+
     if n == 1:
         return [1]
     if is_even(n):
@@ -54,6 +58,10 @@ def collatz_steps(n):
 
 
 def collatz_n_steps(n):
+    """
+    Returns the number of elements of the Collatz sequence for the integer in input.
+    """
+
     if n == 1:
         return 0
     if is_even(n):
@@ -63,6 +71,10 @@ def collatz_n_steps(n):
 
 
 def collatz_n_steps2max(n):
+    """
+    Returns the number of elements of the Collatz sequence for the numbers up to the integer in input.
+    """
+
     steps_list = [0]
     for i in range(2, n + 1):
         done = False
@@ -81,3 +93,22 @@ def collatz_n_steps2max(n):
                     step = (3 * step + 1) // 2
 
     return steps_list
+
+
+def pascals_triangle(n, m):
+    """
+    Returns a n by m matrix containing the values in the Pascal's triangle.
+    """
+
+    triangle = []
+
+    for i in range(n):
+        triangle.append([])
+        for j in range(m):
+            triangle[i].append(1)
+
+    for i in range(1, n):
+        for j in range(1, m):
+            triangle[i][j] = triangle[i - 1][j] + triangle[i][j - 1]
+
+    return triangle
