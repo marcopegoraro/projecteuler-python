@@ -314,7 +314,7 @@ def get_prime_factors(n):
     for i in PRIMES:
         if not n % i:  # i is a factor
             n = n // i
-            return [i] + get_prime_factors(n) # TODO: test return [i] + get_prime_factors(n // i)
+            return [i] + get_prime_factors(n)  # TODO: test return [i] + get_prime_factors(n // i)
 
 
 def get_map_prime_factors(n):
